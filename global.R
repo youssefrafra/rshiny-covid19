@@ -15,11 +15,11 @@ library("rnaturalearth")
 library("rnaturalearthdata")
 library(rgdal)
 
-world_spdf <- readOGR( "C:/TP1/covid19projet/DATA/world_shape_file/TM_WORLD_BORDERS_SIMPL-0.3.shp")
+world_spdf <- readOGR( "DATA/world_shape_file/TM_WORLD_BORDERS_SIMPL-0.3.shp")
 world <- ne_countries(scale = "medium")
-WHO_COVID <- read_csv("WHO-COVID.csv")
-vaccination_data <- read_csv("vaccination-data.csv")
-country <- read_delim("C:/TP1/covid19projet/country.csv", 
+WHO_COVID <- read_csv("DATA/WHO-COVID.csv")
+vaccination_data <- read_csv("DATA/vaccination-data.csv")
+country <- read_delim("DATA/country.csv", 
                       delim = "\t", escape_double = FALSE, 
                       trim_ws = TRUE)
 data_with_coords <- merge(x = WHO_COVID, y = country, by = "Name", all.y  = TRUE)

@@ -111,8 +111,8 @@ shinyServer(function(input, output) {
       
       leaflet(vaccines_with_coords) %>%
         addTiles() %>%
-        setView(lng = 178.441895,
-                lat = -18.141600,
+        setView(lng = 45,
+                lat = 40,
                 zoom = 3.5) %>%
         addMarkers(lng=vaccines_with_coords$longitude, lat=vaccines_with_coords$latitude, popup = paste0("<b>Country: </b>",
                                                                                                   vaccines_with_coords$Name,
@@ -144,8 +144,8 @@ shinyServer(function(input, output) {
                     )
       leaflet(data_with_coords) %>%
         addTiles() %>%
-        setView(lng = 178.441895,
-                lat = -18.141600,
+        setView(lng = 45,
+                lat = 40,
                 zoom = 3.5) %>%
         # fitBounds(~min(longitude), ~min(latitude), ~max(longitude), ~max(latitude)) %>%
         addMarkers(lng=data_with_coords$longitude, lat=data_with_coords$latitude, popup = paste0("<b>Country: </b>",

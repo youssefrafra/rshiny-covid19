@@ -29,15 +29,10 @@ shinyUI(dashboardPage(
       hr(),
       
 
-      menuItem("Country", icon = icon("flag"),
-               menuSubItem("Dashboard", tabName = "dashboard", icon = icon("home")),
-               menuSubItem("Charts", tabName = "Charts", icon = icon("chart-area"))
-               ),
-      menuItem("World", icon = icon("globe"),
-               menuSubItem("Graphs", tabName = "Plot", icon = icon("chart-bar")),
-               menuSubItem("Map of vaccinations", tabName = "Map", icon = icon("map-marked-alt")),
-               menuSubItem("Map of cases", tabName = "Map2", icon = icon("map-marked-alt"))
-               )
+      menuItem("Main", tabName = "dashboard", icon = icon("home")),
+      menuItem("Graphs", tabName = "Plot", icon = icon("chart-bar")),
+      menuItem("Map of vaccinations", tabName = "Map", icon = icon("map-marked-alt")),
+      menuItem("Map of cases", tabName = "Map2", icon = icon("map-marked-alt"))
     )
   ),
   dashboardBody(
@@ -45,23 +40,35 @@ shinyUI(dashboardPage(
         tabItems(
           
           tabItem("dashboard",
-                  h1('Cases and Deaths'),
-                  column(6,
-                         valueBoxOutput("infected_box",  width = 12),
-                         valueBoxOutput("sick_box",      width = 12)
-                  ),
-                  column(6,
-                         valueBoxOutput("recovered_box", width = 12),
-                         valueBoxOutput("death_box",     width = 12)
-                  )
+                  
+                  fluidRow(
+                    h1('Cases and Deaths'),
+                    column(6,
+                           valueBoxOutput("total_cases",  width = 12),
+                           valueBoxOutput("new_cases",      width = 12)
+                    ),
+                    column(6,
+                           valueBoxOutput("total_deaths", width = 12),
+                           valueBoxOutput("new_deaths",     width = 12)
+                    ) 
+                  ),# close fluidRow
+                  fluidRow(
+                    h1('Total vaccinations and type of vaccine used'),
+                    column(6,
+                           valueBoxOutput("total_vac",  width = 12),
+                           valueBoxOutput("vac_used",   width = 12)
+                    ),
+                    column(6,
+                           valueBoxOutput("", width = 12),
+                           valueBoxOutput("", width = 12)
+                    ) 
+                  ) # close fluidRow
           ), # close tabItem
           tabItem("Plot",
                   h1('Top 10 Countries with most Covid-19 Cases'),
                   plotlyOutput("plot1"),
                   h1('Top 10 countries with most vaccinated population'),
-                  plotlyOutput("plot2"),
-                  h1('Top 10 countries with highest percent of vaccinated population'),
-                  plotlyOutput("plot3")
+                  plotlyOutput("plot2")
           ), # close tabItem
           tabItem("Map",
                   leafletOutput("map1",height = "900px")),

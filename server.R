@@ -12,29 +12,59 @@ source("global.R")
 
 shinyServer(function(input, output) {
 
-  # The confirmed cases
-    output$infected_box  <- shinydashboard::renderValueBox({
+  # Total Cases
+    output$total_cases  <- shinydashboard::renderValueBox({
       x <- WHO_COVID %>% filter(Name == input$select_country) %>% select(Cases_cumulative_total)
-      valueBox( x, "Total Cases", icon = icon("viruses"), color = "green")
+      valueBox( x, h2("Total Cases"), icon = icon("viruses"), color = "green")
     })
     # 
-    # Number of people still sick
-    output$sick_box  <- renderValueBox({
+    # Newly reported Cases in last 24 hours
+    output$new_cases  <- renderValueBox({
       x <- WHO_COVID %>% filter(Name == input$select_country) %>% select(Cases_newly_reported_in_last_24_hours)
-      valueBox(x[[1]], "Newly reported Cases in last 24 hours", icon = icon("virus"), color = "yellow")
+      valueBox(x[[1]], h2("Newly reported Cases in last 24 hours"), icon = icon("virus"), color = "yellow")
     })
     # 
-    # The recovered cases
-    output$recovered_box  <- renderValueBox({
+    # Total Deaths
+    output$total_deaths  <- renderValueBox({
       x <- WHO_COVID %>% filter(Name == input$select_country) %>% select(Deaths_cumulative_total)
-      valueBox(x , "Total Deaths", icon = icon("skull-crossbones"), color = "orange")
+      valueBox(x , h2("Total Deaths"), icon = icon("skull-crossbones"), color = "orange")
     })
     # 
-    # Deaths
-    output$death_box  <- renderValueBox({
+    # Newly reported Deaths in last 24 hours
+    output$new_deaths  <- renderValueBox({
       x <- WHO_COVID %>% filter(Name == input$select_country) %>% select(`Deaths_newly_reported_in last_24_hours`)
-      valueBox(x , "Newly reported Deaths in last 24 hours", icon = icon("skull"), color ="red")
+      valueBox(x , h2("Newly reported Deaths in last 24 hours"), icon = icon("skull"), color ="red")
     })
+    # 
+    # Total vaccinations
+    output$total_vac <- renderValueBox({
+      x <- vaccination_data %>% filter(Name == input$select_country) %>% select(PERSONS_FULLY_VACCINATED)
+      if(input$select_country == 'Global'){
+        x <- vaccination_data %>% summarize(total = sum(PERSONS_FULLY_VACCINATED, na.rm=TRUE)) %>% select(total)
+      }
+      valueBox(x , h2("Total fully Vaccinated"), icon = icon("syringe"), color ="blue")
+    })
+    # 
+    # Newly reported Deaths in last 24 hours
+     test <- reactive({input$select_country != 'Global'})
+      output$vac_used  <- renderValueBox({
+        if(test()){
+          types <- vaccination_data %>% 
+                    filter(Name == input$select_country) %>% 
+                    select(VACCINES_USED) %>% 
+                    str_replace_all(',', "</br>")
+          x <- HTML(paste(types))
+          valueBox(x , h2("Vaccine used"), icon = icon("syringe"), color ="lime")
+        }else{
+          first_countries <- vaccination_data %>% 
+                        arrange(FIRST_VACCINE_DATE) %>% 
+                        select(Name, FIRST_VACCINE_DATE) %>% 
+                        head(1)
+          # first_countries <-
+          x <- HTML(paste("Country :",first_countries[,1],collapse = ", "))
+          valueBox(x , h2("First country to use a vaccine"), icon = icon("trophy"), color ="lime")
+        }
+      })
     # 
     # Bar Plot 1
     output$plot1 <- renderPlotly({
@@ -79,28 +109,6 @@ shinyServer(function(input, output) {
       fig
     })
     # 
-    # Bar Plot 3
-    output$plot3 <- renderPlotly({
-      fig <- plot_ly(vaccination_data %>% 
-                       arrange(desc(PERSONS_FULLY_VACCINATED_PER100)) %>% 
-                       head(10), 
-                     x= ~Name, 
-                     y= ~PERSONS_FULLY_VACCINATED_PER100, 
-                     type = 'bar') %>%
-        layout(
-          title = "Percent vaccinated for each country",
-          xaxis = list(title = "Country",
-                       categoryorder = "array",
-                       categoryarray = ~Name),
-          yaxis = list(title = "% of vaccinated",
-                       autosize = F, 
-                       width = 400, 
-                       height = 400)
-        )
-      fig
-    })
-    #
-    # 
     # Map plot
     output$map1 <- renderLeaflet({
       mybins <- seq(4, 6.5, by=0.5)
@@ -111,8 +119,8 @@ shinyServer(function(input, output) {
       
       leaflet(vaccines_with_coords) %>%
         addTiles() %>%
-        setView(lng = 45,
-                lat = 40,
+        setView(lng = 178.441895,
+                lat = -18.141600,
                 zoom = 3.5) %>%
         addMarkers(lng=vaccines_with_coords$longitude, lat=vaccines_with_coords$latitude, popup = paste0("<b>Country: </b>",
                                                                                                   vaccines_with_coords$Name,
@@ -144,8 +152,8 @@ shinyServer(function(input, output) {
                     )
       leaflet(data_with_coords) %>%
         addTiles() %>%
-        setView(lng = 45,
-                lat = 40,
+        setView(lng = 178.441895,
+                lat = -18.141600,
                 zoom = 3.5) %>%
         # fitBounds(~min(longitude), ~min(latitude), ~max(longitude), ~max(latitude)) %>%
         addMarkers(lng=data_with_coords$longitude, lat=data_with_coords$latitude, popup = paste0("<b>Country: </b>",

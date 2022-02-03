@@ -69,6 +69,8 @@ shinyUI(dashboardPage(
                   plotlyOutput("plot1"),
                   h1('Top 10 countries with most vaccinated population'),
                   plotlyOutput("plot2")
+                  h1('Top 10 countries with highest percent of vaccinated population'),
+                  plotlyOutput("plot3")
           ), # close tabItem
           tabItem("Map",
                   leafletOutput("map1",height = "900px")),

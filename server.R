@@ -195,5 +195,39 @@ shinyServer(function(input, output) {
                    fillOpacity = 0.7, 
         )
     })
+    
+    # comparison_plot
+    
+    output$comparison_plot <- renderPlotly({
+      cbbPalette <- c("#000000", "#E69F00")
+      # , "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+      print(input$comparison_metric)
+      if(input$comparison_metric == "cases"){
+        ggplot() +
+          geom_bar(data = ebola_cases,aes(x= "Ebola", y = somme), stat = 'identity',fill= 'dark red') +
+          geom_text(data =sars_cases, aes(x= "Ebola", y = somme,label=somme), nudge_y = -0.1, size = 10, color="white") +
+          geom_bar(data = sars_cases,aes(x= "Sars", y = somme), stat = 'identity',fill= 'orange') +
+          geom_text(data =ebola_cases, aes(x= "Sars", y = somme,label=somme), nudge_y = -0.7, size = 10, color="white") +
+          geom_bar(data = WHO_COVID %>% filter(Name == "Global"), aes(x = "Covid", y = Cases_cumulative_total),stat = 'identity', fill= 'dark green') +
+          geom_text(data =WHO_COVID %>% filter(Name == "Global"), aes(x= "Covid", y = Cases_cumulative_total,label=Cases_cumulative_total),nudge_y = -0.8, size = 10, color="white") +
+          coord_flip() +
+          xlab("") +
+          ylab("") +
+          scale_y_continuous(trans='log10')
+      }
+      else{
+      ggplot() +
+        geom_bar(data = ebola_deaths, aes(x= "Ebola", y = somme), stat = 'identity',fill= 'dark red') +
+        geom_text(data =ebola_deaths, aes(x= "Ebola", y = somme,label=somme), nudge_y = -0.3, size = 10, color="white") +
+        geom_bar(data = sars_deaths, aes(x= "Sars", y = somme), stat = 'identity',fill= 'orange') +
+        geom_text(data =sars_deaths, aes(x= "Sars", y = somme,label=somme), nudge_y = -0.2, size = 10, color="white") +
+        geom_bar(data = WHO_COVID %>% filter(Name == "Global"), aes(x = "Covid", y = Deaths_cumulative_total),stat = 'identity', fill= 'dark green') +
+        geom_text(data =WHO_COVID %>% filter(Name == "Global"), aes(x= "Covid", y = Deaths_cumulative_total,label=Deaths_cumulative_total),nudge_y = -0.5, size = 10, color="white") +
+        coord_flip() +
+        xlab("") +
+        ylab("") +
+        scale_y_continuous(trans='log10')
+      }
+    })
 
 })

@@ -78,7 +78,16 @@ shinyUI(dashboardPage(
           tabItem("Map",
                   leafletOutput("map1",height = "900px")),
           tabItem("Map2",
-                  leafletOutput("map2",height = "900px"))
+                  leafletOutput("map2",height = "900px")),
+          tabItem("Charts",
+                  h1("Outbrakes Comparisons"),
+                  br(),
+                  fluidRow(
+                    column(2,radioButtons("comparison_metric", h2("Select comparison:"),
+                                          c("Cases" = "cases",
+                                            "Deaths" = "deaths"))),
+                    column(10,plotlyOutput("comparison_plot")))
+                  )
         ) # close tabItems
     ) # close div
   ) # close dashboardBody()

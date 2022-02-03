@@ -91,10 +91,10 @@ shinyServer(function(input, output) {
     # Bar Plot 2
     output$plot2 <- renderPlotly({
       fig <- plot_ly(vaccination_data %>% 
-                       arrange(desc(TOTAL_VACCINATIONS)) %>% 
-                       head(10), 
-                     x= ~Name, 
-                     y= ~TOTAL_VACCINATIONS, 
+                       arrange(desc(PERSONS_FULLY_VACCINATED)) %>% 
+                      head(10), 
+                   x= ~Name, 
+                   y= ~PERSONS_FULLY_VACCINATED,  
                      type = 'bar') %>%
         layout(
           title = "Total vaccination for each country",

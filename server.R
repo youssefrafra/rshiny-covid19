@@ -109,6 +109,27 @@ shinyServer(function(input, output) {
       fig
     })
     # 
+    # Bar Plot 3
+    output$plot3 <- renderPlotly({
+      fig <- plot_ly(vaccination_data %>% 
+                       arrange(desc(PERSONS_FULLY_VACCINATED_PER100)) %>% 
+                       head(10), 
+                     x= ~Name, 
+                     y= ~PERSONS_FULLY_VACCINATED_PER100, 
+                     type = 'bar') %>%
+        layout(
+          title = "Percent vaccinated for each country",
+          xaxis = list(title = "Country",
+                       categoryorder = "array",
+                       categoryarray = ~Name),
+          yaxis = list(title = "% of vaccinated",
+                       autosize = F, 
+                       width = 400, 
+                       height = 400)
+        )
+      fig
+    })
+    #
     # Map plot
     output$map1 <- renderLeaflet({
       mybins <- seq(4, 6.5, by=0.5)
